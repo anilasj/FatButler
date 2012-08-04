@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- <!DOCTYPE sqlMapConfig
+   SYSTEM	"file:/Users/anila/app/scouttestapp/sql-map-config-2.dtd">-->
+ <!DOCTYPE sqlMapConfig
+PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-config-2.dtd"> 
+
+<sqlMapConfig>
+	<settings cacheModelsEnabled="true" enhancementEnabled="true" lazyLoadingEnabled="true"
+		maxRequests="512" maxSessions="128" maxTransactions="32" useStatementNamespaces="false" />
+	<transactionManager type="JDBC" commitRequired="true">
+		<dataSource type="JNDI">
+			<property name="DataSource" value="java:comp/env/jdbc/scdb"/>
+		</dataSource>
+	</transactionManager>
+	
+	<sqlMap resource="com/sc/dao/rdbms/User.ib.xml" /> 
+	<sqlMap resource="com/sc/dao/rdbms/Task.ib.xml" /> 
+	<sqlMap resource="com/sc/dao/rdbms/Event.ib.xml" /> 
+	<sqlMap resource="com/sc/dao/rdbms/List.ib.xml" /> 
+</sqlMapConfig>

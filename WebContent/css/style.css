@@ -1,0 +1,95 @@
+/* App Styles */
+@import url(./bootstrap.css);
+
+.navbar-search {
+  position: relative;
+  float:left;
+  margin-top: 0px;
+  margin-bottom: 0;
+}
+.navbar-search .search-query {
+	padding-left: 29px;
+}
+
+.navbar-search .icon-search {
+	position:absolute;
+	top: 7px;
+	left: 11px;
+	background-image: url("../img/glyphicons-halflings-white.png");
+}
+
+.navbar-search .search-query:focus, .navbar-search .search-query.focused {
+	padding-left: 30px;
+}
+
+.search-query:focus + .icon-search{
+	background-image: url("../img/glyphicons-halflings.png");
+}
+.bar-add-top {padding:10px 0px 20px 0px;text-align:center;}
+.bar-add {
+  position: relative;
+  float:none;
+  margin-top: 6px;
+  margin-bottom: 0;
+}
+.bar-add .add-query {
+  padding: 4px 9px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 1;
+  color: #333333;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.15);
+     -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.15);
+          box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.15);
+  -webkit-transition: none;
+     -moz-transition: none;
+      -ms-transition: none;
+       -o-transition: none;
+          transition: none;
+	padding-left: 29px;
+	margin-bottom: 0;
+  -webkit-border-radius: 14px;
+     -moz-border-radius: 14px;
+          border-radius: 14px;
+    
+}
+.bar-add .add-query:-moz-placeholder {
+  color: #999999;
+}
+
+.bar-add .add-query::-webkit-input-placeholder {
+  color: #999999;
+}
+.bar-add .icon-plus {
+	position:absolute;
+	top: 7px;
+	left: 11px;
+	background-image: url("../img/glyphicons-halflings.png");
+}
+
+.bar-add .add-query:focus, .bar-add .add-query.focused {
+	padding-left: 30px;
+}
+
+.add-query:focus + .icon-plus{
+	background-image: url("../img/glyphicons-halflings.png");
+}
+.longtext {width:300px;}
+
+.pager {
+  margin-top: 20px;
+  margin-bottom: 0px;
+  margin-left: 0;
+  text-align: center;
+  list-style: none;
+  *zoom: 1;
+}
+.nav li + .nav-header {
+  margin-top: 20px;
+}
+.sidebar-nav {
+	min-height:500px;
+     height:auto !important;
+     height:500px; 
+}

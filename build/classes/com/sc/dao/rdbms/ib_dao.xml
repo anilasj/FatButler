@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- <!DOCTYPE daoConfig
+	SYSTEM	"file:/Users/anila/app/scouttestapp/dao-2.dtd">-->
+<!DOCTYPE daoConfig
+ PUBLIC "-//ibatis.apache.org//DTD DAO Configuration 2.0//EN"  "http://ibatis.apache.org/dtd/dao-2.dtd"> 
+<daoConfig>
+	<context>
+
+	<transactionManager type="SQLMAP">
+		<property name="SqlMapConfigResource" value="com/sc/dao/rdbms/ib_config.xml" />
+	</transactionManager>
+	
+	<dao interface="com.sc.dao.iface.UserDao"
+		implementation="com.sc.dao.rdbms.SqlMapUserDao" /> 
+	<dao interface="com.sc.dao.iface.TaskDao"
+		implementation="com.sc.dao.rdbms.SqlMapTaskDao" /> 
+	<dao interface="com.sc.dao.iface.ListDao"
+		implementation="com.sc.dao.rdbms.SqlMapListDao" /> 
+	<dao interface="com.sc.dao.iface.EventDao"
+		implementation="com.sc.dao.rdbms.SqlMapEventDao" /> 
+	</context>
+		
+</daoConfig>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- <!DOCTYPE sqlMap 	SYSTEM	"file:/Users/anila/app/scouttestapp/sql-map-2.dtd"> -->
+ <!DOCTYPE sqlMap
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	
+	<sqlMap namespace="Task">
+		<typeAlias alias="tBooleanHandler" 
+  		type="com.sc.dao.BooleanTypeHandler"/>
+		
+		<insert id="insertTask" parameterClass="java.util.Map">
+			insert into task(id, name,due_dtm,priority_flg,status,share_type,create_uid,snooze_mins,action, notes_flg,comments_flg, reminder, recurrence, list_id, create_dtm)
+			values (#myId#,#name#,#dueDate#,#priority#,#status#,#shareType#,#createUid#,#snoozeMins#,#action#,#hasNotes#,#hasComments#, #reminder#,#recurrence#,#listId#,#createDTM#)
+			<selectKey keyProperty="myId" resultClass="int">
+			     SELECT last_insert_id() </selectKey> 
+		</insert>
+		
+		<insert id="insertUserTask" parameterClass="java.util.Map">
+			insert into user_task(uid, task_id, confirm_flg)
+			values (#uid#,#tid#,#confirmFlg#)
+		</insert>
+		
+		<update id="updateUserTask" parameterClass="java.util.Map">
+			update user_task set confirm_flg = #confirmFlg# where uid =#uid# and task_id =#tid#
+		</update>
+		
+		<update id="updateTask" parameterClass="java.util.Map">
+			update task set id = #tid#
+			<isNotNull property="name">,name = #name#</isNotNull>
+			<isNotNull property="priority">,priority_flg = #priority#</isNotNull>
+			<isNotNull property="shareType">,share_type = #shareType#</isNotNull>
+			<isNotNull property="doneFlg">,done_flg = #doneFlg#</isNotNull>
+			<isNotNull property="doneDate">,done_dtm = #doneDate#</isNotNull>
+			<isNotNull property="action">,action = #action#</isNotNull>
+			<isNotNull property="status">,status = #status#</isNotNull>
+			<isNotNull property="snoozeMins">,snooze_mins = #snoozeMins#</isNotNull>
+			<isNotNull property="snoozeDate">,snooze_dtm = #snoozeDate#</isNotNull>
+			<isNotNull property="dueDate">,due_dtm = #dueDate#</isNotNull>
+			<isNotNull property="reminder">,reminder = #reminder#</isNotNull>
+			<isNotNull property="recurrence">,recurrence = #recurrence#</isNotNull>
+			where id = #tid#
+		</update>
+		<update id="updateTaskFlgs" parameterClass="java.util.Map">
+			update task set
+			<isNotNull property="notesFlg">notes_flg = #notesFlg#</isNotNull>
+			<isNotNull property="commentsFlg">comments_flg = #commentsFlg#</isNotNull>
+			where id = #tid#
+		</update>
+		<delete id="deleteTask" parameterClass="java.lang.String">
+		    delete from task where id = #value#;
+		</delete>
+		<delete id="deleteUserTasks" parameterClass="java.lang.String">
+		    delete from user_task where task_id = #value#;
+		</delete>
+		<delete id="deleteReminder" parameterClass="java.lang.String">
+			delete from reminder where task_id = #value#;
+		</delete>
+		<insert id="insertReminder" parameterClass="com.sc.domain.Reminder">
+			insert into reminder (task_id, processed_flg, type, run_dtm)
+			values (#taskId#,'N',#type#,#runDate#)
+		</insert>
+		<insert id="insertNotes" parameterClass="java.util.Map">
+			insert into note(task_id, create_uid, comment, status, create_dtm)
+			values (#tid#,#uid#,#comments#,'A', #createDtm#);
+		</insert>
+		<update id="updateNotes" parameterClass="java.util.Map">
+			update note set comment= #comments# where task_id = #tid# and create_uid = #uid#
+		</update>
+		<delete id="deleteNotes" parameterClass="java.util.Map">
+			delete from note where task_id = #tid# and create_uid = #uid#
+		</delete>
+		<insert id="insertRecurrence" parameterClass="java.util.Map">
+			insert into task_recurrence(task_id, done_flg, done_dtm, status)
+			values (#taskId#,#doneFlg#,#doneDtm#,'A');
+		</insert>
+		<delete id="deleteRecurrence" parameterClass="java.lang.String">
+			delete from task_recurrence where task_id = #value#;
+		</delete>
+		<select id="getRecurrenceTask" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+			select id from task_recurrence where DATEDIFF(done_dtm, #dt#) = 0 and task_id = #tid#
+		</select>
+		<delete id="deleteRecurrenceTask"  parameterClass="java.lang.String">
+			delete from task_recurrence where id = #value#
+		</delete>
+		<update id="updateRecurrenceTask"  parameterClass="java.util.Map">
+			update task_recurrence set done_flg = #doneFlg#, done_dtm = #doneDtm# where id = #id# and task_id = #taskId#
+		</update>
+		<select id="getNotes" parameterClass="java.lang.String" resultClass="java.lang.String">
+			select comment from note where task_id = #tid#
+		</select>
+		<resultMap id="task_result" class="com.sc.domain.Task">
+			<result column="id" property="id" />
+			<result column="name" property="name" />
+			<result column="due_dtm" property="dueDate" />
+			<result column="snooze_mins" property="snoozeMins" />
+			<result column="snooze_dtm" property="snoozeDate" />
+			<result column="reminder" property="reminder" />
+			<result column="recurrence" property="recurrence" />
+			<result column="priority_flg" property="priority" />
+			<result column="share_type" property="shareType" />
+			<result column="list_id" property="listId" />
+			<result column="status" property="status" />
+			<result column="action" property="action" />
+			<result column="create_uid" property="createdUid" />
+			<result column="create_dtm" property="created" />
+			<result column="mod_dtm" property="modified" />
+			<result column="notes_flg" property="hasNotes" typeHandler="tBooleanHandler"/>
+			<result column="comments_flg" property="hasComments" typeHandler="tBooleanHandler"/>
+			<result column="done_flg" property="done" typeHandler="tBooleanHandler"/>
+			<result column="done_dtm" property="doneDate" />
+		</resultMap>
+		<select id="getTaskById" resultMap="task_result" parameterClass="java.lang.String">
+			select t.*, null as start_dtm from task t where t.id = #value#
+		</select>
+		<select id="getUserTask" resultMap="task_result" parameterClass="java.util.Map">
+			select t.*, null as start_dtm from task t, user_task ut
+			where t.id = ut.task_id and ut.uid = #uid# and ut.task_id = #tid#
+		</select>
+		<select id="getTasks" resultMap="task_result" parameterClass="java.util.Map">
+			select t.id, t.name, t.due_dtm,t.snooze_mins, t.snooze_dtm, t.reminder, t.recurrence, t.priority_flg, t.share_type, t.list_id, t.status,
+			t.action, t.create_uid, t.create_dtm, t.mod_dtm, t.notes_flg, t.comments_flg, t.done_flg, t.done_dtm from task t 
+			where t.recurrence IS NULL OR t.recurrence = 'ONE' and (due_dtm IS NULL OR DATEDIFF(due_dtm , #dueDt#) = 0) and t.status = 'A'
+			<isNotNull property="name">and name like #name#</isNotNull>
+			<isNotNull property="done">
+			 <isEqual property="done" compareValue="y">and LOWER(done_flg) = #done#</isEqual>
+			 <isNotEqual property="done" compareValue="y">and (LOWER(done_flg) = #done# OR done_flg is NULL)</isNotEqual>
+			 </isNotNull>
+			<isEqual property="overdue" compareValue="Y">and done_dtm IS NULL</isEqual>
+			UNION
+			select t.id, t.name, CONVERT(CONCAT(DATE(#dueDt#),' ', TIME(t.due_dtm)),DATETIME) as due_dtm, t.snooze_mins, t.snooze_dtm, t.reminder, t.recurrence, t.priority_flg, t.share_type, t.list_id, t.status,
+			t.action, t.create_uid, t.create_dtm, t.mod_dtm, t.notes_flg, t.comments_flg, r.done_flg, r.done_dtm
+			from task t LEFT JOIN task_recurrence r ON t.id = r.task_id and r.status ='A'
+			where <![CDATA[DATEDIFF(t.due_dtm, #dueDt#) <=0 ]]>
+			and (t.recurrence = 'DLY' OR (t.recurrence = 'MLY' and DAY(t.due_dtm) = DAY(#dueDt#)) 
+				OR (t.recurrence = 'YLY' and DAY(t.due_dtm) = DAY(#dueDt#) and MONTH(t.due_dtm) = MONTH(#dueDt#))
+				OR (t.recurrence = 'WLY' and (DATEDIFF(#dueDt#,t.due_dtm) % 7 = 0))
+			) 
+			
+			<isNotNull property="name">and name like #name#</isNotNull>
+			<isNotNull property="done"><isEqual property="done" compareValue="y">and LOWER(r.done_flg) = #done#</isEqual>
+			 <isNotEqual property="done" compareValue="y">and (LOWER(r.done_flg) = #done# OR r.done_flg is NULL)</isNotEqual>
+			 </isNotNull>
+			<isEqual property="overdue" compareValue="Y">and r.done_dtm IS NULL</isEqual>
+			
+			<isNotNull property="orderBy"> order by
+			 <iterate conjunction=",">#orderBy#</iterate>
+			</isNotNull>
+			<isNull property="orderBy">order by due_dtm desc</isNull>
+		</select>
+	</sqlMap>

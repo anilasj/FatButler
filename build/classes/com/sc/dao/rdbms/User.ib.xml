@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- <!DOCTYPE sqlMap 	SYSTEM	"file:/Users/anila/app/scouttestapp/sql-map-2.dtd"> -->
+ <!DOCTYPE sqlMap
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	
+	<sqlMap namespace="User">
+		<resultMap id="user_result" class="com.sc.domain.User">
+			<result column="id" property="id" />
+			<result column="fb_id" property="facebookId"/>
+			<result column="fb_token" property="facebookToken"/>
+			<result column="name" property="name" />
+			<result column="email" property="email" />
+			<result column="status" property="status" />
+			<result column="image_url" property="image" />
+			<result column="city" property="city" />
+			<result column="state" property="state" />
+			<result column="country" property="country" />
+			<result column="birth_day" property="birthDay" />
+			<result column="gender" property="gender" />
+			<result column="pwd" property="password" />
+			<result column="pwd_token" property="passwordToken" />
+			<result column="pwd_token_expires" property="passwordTokenExpires" />
+			<result column="create_dtm" property="created" />
+			<result column="last_login_dtm" property="lastLogin" />	
+			<result column="mod_dtm" property="modified" />
+			
+		</resultMap>
+		
+		<insert id="insertUser" parameterClass="java.util.Map">
+			insert into user(id, fb_id, fb_token, name, city, state, country, birth_day, gender, email, status, image_url, pwd, pwd_token, pwd_token_expires, create_dtm)
+			values (#myId#, #FBId#,#FBToken#,#Name#,#City#,#State#,#Country#,#BirthDay#,#Gender#,#Email#,#Status#,#ImageUrl#,#Pwd#,#PwdToken#,#PwdTokenExpires#, #CreateDTM#)
+			<selectKey keyProperty="myId" resultClass="int">
+			     SELECT last_insert_id() </selectKey> 
+		</insert>
+		<select id="getUserById" resultMap="user_result" parameterClass="java.lang.String">
+			select * from user where id = #value# and status = 'A'
+		</select>
+		<select id="getUserByName" resultMap="user_result" parameterClass="java.lang.String">
+			select * from user where LOWER(name) = #value# and status = 'A'
+		</select>
+		<select id="getUserByEmail" resultMap="user_result" parameterClass="java.lang.String">
+			select * from user where LOWER(email) = #value# and status = 'A'
+		</select>
+		<insert id="insertInvite" parameterClass="java.util.Map">
+			insert into invite(source_uid, item_id, email)
+			values (#sid#,#itemId#,#email#)
+		</insert>
+	</sqlMap>

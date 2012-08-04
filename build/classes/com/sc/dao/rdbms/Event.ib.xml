@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- <!DOCTYPE sqlMap 	SYSTEM	"file:/Users/anila/app/scouttestapp/sql-map-2.dtd"> -->
+ <!DOCTYPE sqlMap
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	
+	<sqlMap namespace="Event">
+		<typeAlias alias="tBooleanHandler" 
+  		type="com.sc.dao.BooleanTypeHandler"/>
+		
+		<insert id="insertNotification" parameterClass="java.util.Map">
+			insert into notification (uid, task_id, source_uid, type, processed_flg, create_dtm)
+			values (#uid#,#tid#,#sid#,#type#,'N',#createDtm#);
+		</insert>
+		
+		<update id="updateNotification" parameterClass="java.util.Map">
+			update notification set processed_flg = #flg# where uid = #uid# and task_id = #tid#
+		</update>
+		
+		<delete id="deleteNotification" parameterClass="java.util.Map">
+		    delete from notification where uid = #uid# and task_id = #tid#
+		</delete>
+		
+		<insert id="addComment" parameterClass="java.util.Map">
+			insert into comment (task_id, create_uid, comment, status)
+			values (#tid#,#uid#,#comment#,'A');
+		</insert>
+		
+		<resultMap id="comment_result" class="com.sc.domain.Comment">
+			<result column="id" property="createUser.id" />
+			<result column="name" property="createUser.name" />
+			<result column="image_url" property="createUser.image" />
+			<result column="comment" property="comment" />
+			<result column="create_dtm" property="created" />
+			
+		</resultMap>
+		<select id="getComments" resultMap="comment_result" parameterClass="java.util.Map">
+			select c.comment, c.create_dtm, u.id, u.name, u.image_url from comment c, user u where c.status ='A' and c.create_uid = u.id
+			and u.status = 'A' and c.task_id = #tid#
+			order by c.create_dtm desc
+			LIMIT #maxCnt#
+			<isNotNull property="pgCnt">OFFSET #pgCnt#</isNotNull>
+		</select>
+	</sqlMap>

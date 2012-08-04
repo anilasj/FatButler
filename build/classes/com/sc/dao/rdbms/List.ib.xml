@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- <!DOCTYPE sqlMap 	SYSTEM	"file:/Users/anila/app/scouttestapp/sql-map-2.dtd"> -->
+ <!DOCTYPE sqlMap
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+	
+	<sqlMap namespace="List">
+		<resultMap id="list_result" class="com.sc.domain.List">
+			<result column="id" property="id" />
+			<result column="parent_id" property="parentId"/>
+			<result column="name" property="name" />
+			<result column="count" property="itemCount" />
+			<result column="status" property="status" />
+			<result column="create_uid" property="createdUid" />
+			<result column="mod_dtm" property="modified" />
+		</resultMap>
+		
+		<insert id="insertList" parameterClass="java.util.Map">
+			insert into list(id, name, parent_id, status, create_uid)
+			values (#myId#, #name#,#parentId#,#status#,#createUid#)
+			<selectKey keyProperty="myId" resultClass="int">
+			     SELECT last_insert_id() </selectKey> 
+		</insert>
+		<update id="updateList" parameterClass="java.util.Map">
+			update list set name = #name# where id = #id#
+		</update>
+		<delete id="deleteList" parameterClass="java.lang.String">
+			delete from list where id = #value#
+		</delete>
+		<delete id="deleteChildList" parameterClass="java.lang.String">
+			delete from list where parent_id = #value#
+		</delete>
+		<insert id="insertTaskList" parameterClass="java.util.Map">
+			insert into task_list (task_id, list_id,status)
+			value (#taskId#,#id#,'A')
+		</insert>
+		<insert id="insertTaskListByParent" parameterClass="java.util.Map">
+			insert into task_list (task_id, list_id,status)
+			select #taskId#, id , 'A' from list where parent_id = #pid# and status = 'A'
+		</insert>
+		<delete id="deleteTaskList" parameterClass="java.util.Map">
+			delete from task_list where list_id = #id# and task_id = #taskId#
+		</delete>
+		<delete id="deleteTaskListByTaskId" parameterClass="java.lang.String">
+			delete from task_list where task_id = #value#
+		</delete>
+		<update id="updateTaskList" parameterClass="java.util.Map">
+			update task_list set done_flg=#doneFlg#, done_dtm = #doneDtm# where list_id = #id# and task_id = #taskId#
+		</update>
+		<update id="updateTaskForList" parameterClass="java.lang.String">
+			update task set list_id = null where list_id = #value#
+		</update>
+		<select id="getList" resultMap="list_result" parameterClass="java.lang.String">
+			select *, 0 as count from list where id = #value# and status = 'A'
+		</select>
+		<select id="getUserList" resultMap="list_result" parameterClass="java.util.Map">
+			select l.*, count(k.status) as count from list l LEFT JOIN list k ON l.id = k.parent_id 
+			where l.create_uid = #uid# and l.status = 'A' and l.parent_id IS NULL
+			<isNotNull property="name">and LOWER(l.name) like #name#</isNotNull>
+			group by k.parent_id
+			order by l.name;
+		</select>
+		<select id="getChildList" resultMap="list_result" parameterClass="java.lang.String">
+			select *, 0 as count from list where parent_id = #value# and status = 'A'
+		</select>
+	</sqlMap>
